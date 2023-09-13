@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Obi;
+using Unity.VisualScripting;
 
-[ExecuteInEditMode]
 public class SpiralCurve : MonoBehaviour {
 
 	public float radius = 0.25f;
@@ -14,11 +14,7 @@ public class SpiralCurve : MonoBehaviour {
     public float rotationalMass = 1;
     public float thickness = 1;
 
-    void Awake ()
-    {
-        Generate();
-    }
-
+    [ContextMenu(nameof(Generate))]
     public void Generate()
     {
         var rod = GetComponent<ObiRopeBase>();
@@ -45,6 +41,23 @@ public class SpiralCurve : MonoBehaviour {
         }
 
         blueprint.path.FlushEvents();
+    }
+
+
+    void OnDrawGizmos()
+    {
+        float ang = 0;
+        float height = 0;
+
+        for (int i = 0; i < points; ++i)
+        {
+            Vector3 point = new Vector3(Mathf.Cos(ang) * radius, height, Mathf.Sin(ang) * radius);
+            ang += radialStep;
+            height += heightStep;
+
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(point, 0.1f);
+        }
     }
 
 }
